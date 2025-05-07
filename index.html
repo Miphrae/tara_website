@@ -11,8 +11,8 @@
   <!-- MarkerCluster CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
-  <!-- Leaflet Search CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-search/dist/leaflet-search.min.css" />
+  <!-- Leaflet Search CSS (not used, custom search implemented) -->
+  <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet-control-search/dist/leaflet-search.min.css" /> -->
 
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -22,8 +22,6 @@
   <script src="https://unpkg.com/leaflet-omnivore@0.3.4/leaflet-omnivore.min.js"></script>
   <!-- PapaParse for CSV parsing -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <!-- Leaflet Search JS -->
-  <script src="https://unpkg.com/leaflet-control-search/dist/leaflet-search.min.js"></script>
 </head>
 <body>
 
@@ -52,8 +50,6 @@
 <br>
 
 <div class="w3-content w3-padding" style="max-width:1564px">
-
-  <!-- Project Section -->
   <div class="w3-container w3-padding-32" id="projects">
     <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Projects</h3>
   </div>
@@ -112,6 +108,8 @@
     </div>
   </div>
 
+  <!-- ... existing project code ... -->
+
   <!-- Locations Section -->
   <div class="w3-container w3-padding" id="locations">
     <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Locations</h3>
@@ -120,9 +118,24 @@
     <iframe style="display: none;" src="//mangomap.com/san-francisco-foundation/maps/4e4f8744-5fd2-11ef-a39b-02af6ed49e2d?preview=true" allowtransparency="true" frameborder="0" scrolling="no" allowfullscreen mozallowfullscreen webkitallowfullscreen oallowfullscreen msallowfullscreen width="1500" height="800" onload="this.style.display='block';"></iframe>
   </div>
 
-  <!-- New Leaflet Map Section -->
+  <!-- New Leaflet Map Section with custom search -->
   <div class="w3-container w3-padding-32" id="map-section">
     <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Leaflet Map</h3>
+
+    <!-- SEARCH BAR -->
+    <div style="margin-bottom:0.5rem;">
+      <input
+        type="text"
+        id="org-search"
+        placeholder="Search organizations…"
+        style="width:100%; padding:0.5rem; border:1px solid #ccc; border-radius:4px;"
+      />
+      <div
+        id="search-results"
+        style="background:#fff; max-height:150px; overflow:auto; border:1px solid #ccc; display:none; position:relative; z-index:1000;"
+      ></div>
+    </div>
+
     <div style="display: flex; gap: 1rem;">
       <!-- Sidebar -->
       <div id="sidebar" style="width: 30%; min-width: 200px; max-height: 500px; overflow-y: auto; border: 1px solid #ccc; padding: 0.5rem;">
@@ -133,8 +146,8 @@
     </div>
   </div>
 
-  <!-- About Section -->
-  <div class="w3-container w3-padding-32" id="about">
+   <!-- About Section -->
+   <div class="w3-container w3-padding-32" id="about">
     <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">About</h3>
     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...</p>
   </div>
@@ -197,7 +210,7 @@
   <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS" target="_blank" class="w3-hover-text-green">w3.css</a></p>
 </footer>
 
-<!-- Leaflet Initialization Script -->
+<!-- Leaflet & Search Initialization Script -->
 <script>
   const map = L.map('map').setView([37.5, -119.5], 6);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -205,6 +218,7 @@
   }).addTo(map);
 
   const markers = L.markerClusterGroup();
+  const lookup = [];  // will hold { name, marker }
 
   omnivore.kml('/borders.kml')
     .on('ready', function() {
@@ -221,25 +235,61 @@
         const name = row['Organization Name_CLEAN'];
         const coord = [+row.LAT, +row.LON];
         const marker = L.marker(coord, { title: name });
-        marker.bindPopup(name);
+        marker.bindPopup(`<strong>${name}</strong><br>${row.Address}`);
         marker.on('click', () => {
-          document.getElementById('sidebar').innerHTML = `<h4>${name}</h4><p>${row.Address}</p>`;
+          document.getElementById('sidebar').innerHTML =
+            `<h4>${name}</h4><p>${row.Address}</p>`;
         });
         markers.addLayer(marker);
+        lookup.push({ name, marker });
       });
+
       map.addLayer(markers);
 
-      const searchControl = new L.Control.Search({
-        layer: markers,
-        propertyName: 'title',
-        initial: false,
-        zoom: 12,
-        marker: false
+      // ---- SEARCH LOGIC ----
+      const input = document.getElementById('org-search');
+      const results = document.getElementById('search-results');
+
+      input.addEventListener('input', () => {
+        const q = input.value.trim().toLowerCase();
+        results.innerHTML = '';
+        if (!q) {
+          results.style.display = 'none';
+          return;
+        }
+        const matches = lookup
+          .filter(o => o.name.toLowerCase().includes(q))
+          .slice(0, 10);
+
+        if (!matches.length) {
+          results.style.display = 'none';
+          return;
+        }
+        matches.forEach(o => {
+          const div = document.createElement('div');
+          div.textContent = o.name;
+          div.style.padding = '0.3rem';
+          div.style.cursor = 'pointer';
+          div.addEventListener('mouseover', () => div.style.background = '#f0f0f0');
+          div.addEventListener('mouseout', () => div.style.background = '');
+          div.addEventListener('click', () => {
+            map.setView(o.marker.getLatLng(), 14);
+            o.marker.openPopup();
+            results.style.display = 'none';
+            input.value = o.name;
+          });
+          results.appendChild(div);
+        });
+        results.style.display = 'block';
       });
-      map.addControl(searchControl);
+
+      document.addEventListener('click', e => {
+        if (!input.contains(e.target)) {
+          results.style.display = 'none';
+        }
+      });
     })
     .catch(console.error);
 </script>
-
 </body>
 </html>
