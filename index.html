@@ -11,17 +11,41 @@
   <!-- MarkerCluster CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
-  <!-- Leaflet Search CSS (not used, custom search implemented) -->
-  <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet-control-search/dist/leaflet-search.min.css" /> -->
 
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <!-- MarkerCluster JS -->
-  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
-  <!-- Omnivore plugin for KML -->
-  <script src="https://unpkg.com/leaflet-omnivore@0.3.4/leaflet-omnivore.min.js"></script>
-  <!-- PapaParse for CSV parsing -->
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <style>
+    /* Sidebar styling */
+    #sidebar {
+      background: #f9f9f9;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 1rem;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      color: #333;
+      line-height: 1.4;
+    }
+    #sidebar h4 {
+      margin-top: 0;
+      color: #0074D9;
+      font-size: 2.25rem;
+    }
+    #sidebar p {
+      margin: 0.5rem 0;
+      font-size: 1.0rem;
+    }
+    /* Search results styling */
+    #search-results div {
+      border-bottom: 1px solid #eee;
+    }
+    #search-results div:last-child {
+      border-bottom: none;
+    }
+    /* Input focus style */
+    #org-search:focus {
+      outline: none;
+      border-color: #0074D9;
+      box-shadow: 0 0 4px rgba(0,116,217,0.5);
+    }
+  </style>
 </head>
 <body>
 
@@ -48,8 +72,9 @@
 </header>
 
 <br>
-
 <div class="w3-content w3-padding" style="max-width:1564px">
+
+  <!-- Project Section -->
   <div class="w3-container w3-padding-32" id="projects">
     <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Projects</h3>
   </div>
@@ -108,8 +133,6 @@
     </div>
   </div>
 
-  <!-- ... existing project code ... -->
-
   <!-- Locations Section -->
   <div class="w3-container w3-padding" id="locations">
     <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Locations</h3>
@@ -118,7 +141,7 @@
     <iframe style="display: none;" src="//mangomap.com/san-francisco-foundation/maps/4e4f8744-5fd2-11ef-a39b-02af6ed49e2d?preview=true" allowtransparency="true" frameborder="0" scrolling="no" allowfullscreen mozallowfullscreen webkitallowfullscreen oallowfullscreen msallowfullscreen width="1500" height="800" onload="this.style.display='block';"></iframe>
   </div>
 
-  <!-- New Leaflet Map Section with custom search -->
+  <!-- Leaflet Map Section -->
   <div class="w3-container w3-padding-32" id="map-section">
     <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Leaflet Map</h3>
 
@@ -138,7 +161,7 @@
 
     <div style="display: flex; gap: 1rem;">
       <!-- Sidebar -->
-      <div id="sidebar" style="width: 30%; min-width: 200px; max-height: 500px; overflow-y: auto; border: 1px solid #ccc; padding: 0.5rem;">
+      <div id="sidebar" style="width: 30%; min-width: 200px; max-height: 500px; overflow-y: auto;">
         <p><em>Click a marker on the map → its name will go here.</em></p>
       </div>
       <!-- Map -->
@@ -146,8 +169,8 @@
     </div>
   </div>
 
-   <!-- About Section -->
-   <div class="w3-container w3-padding-32" id="about">
+  <!-- About Section -->
+  <div class="w3-container w3-padding-32" id="about">
     <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">About</h3>
     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...</p>
   </div>
@@ -193,13 +216,11 @@
         <input class="w3-input w3-section w3-border" type="text" placeholder="Email" required name="Email">
         <input class="w3-input w3-section w3-border" type="text" placeholder="Subject" required name="Subject">
         <input class="w3-input w3-section w3-border" type="text" placeholder="Comment" required name="Comment">
-        <button class="w3-button w3-black w3-section" type="submit">
-          <i class="fa fa-paper-plane"></i> SEND MESSAGE
-        </button>
+        <button class="w3-button w3-black w3-section" type="submit">SEND MESSAGE</button>
       </form>
     </div>
     <div class="w3-col 26 m6 w3-margin-bottom" style="display: flex; justify-content: center;">
-      <div class="mangomap-popover-parent-container" style="position: relative;"><a href="//mangomap.com/san-francisco-foundation/maps/4e4f8744-5fd2-11ef-a39b-02af6ed49e2d?preview=true" class="mangomap-popover" data-height="800" data-width="1500"><div fall-back style="background-image: url(//mangomap.com/assets/icons/preview-not-ready.png); height: 360px; width: 472px; background-repeat: no-repeat; display: table-cell; vertical-align: middle; background-position: center;"><img src="//mangomap.com/images/thumnails/4e4f8744-5fd2-11ef-a39b-02af6ed49e2d_big.png" class="anchor-image" alt="" style="display: block; margin: auto;"></div></a><script src="//mangomap.com/assets/stand-alone/mangomap_popup.js" charset="ISO-8859-1" ></script></div>
+      <div class="mangomap-popover-parent-container" style="position: relative;"><a href="//mangomap.com/san-francisco-foundation/maps/4e4f8744-5fd2-11ef-a39b-02af6ed49e2d?preview=true" class="mangomap-popover" data-height="800" data-width="1500"><div fall-back style="background-image: url(//mangomap.com/assets/icons/preview-not-ready.png); height: 360px; width: 472px; background-repeat: no-repeat; display: table-cell; vertical-align: middle; background-position: center;"><img src="//mangomap.com/images/thumnails/4e4f8744-5fd2-11ef-a39b-02af6ed49e2d_big.png" class="anchor-image" alt="" style="display: block; margin: auto;"></div></a><script src="//mangomap.com/assets/stand-alone/mangomap_popup.js" charset="ISO-8859-1"></script></div>
     </div>
   </div>
 
@@ -207,89 +228,16 @@
 
 <!-- Footer -->
 <footer class="w3-center w3-black w3-padding-16">
-  <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS" target="_blank" class="w3-hover-text-green">w3.css</a></p>
+  <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" class="w3-hover-text-green">w3.css</a></p>
 </footer>
 
-<!-- Leaflet & Search Initialization Script -->
-<script>
-  const map = L.map('map').setView([37.5, -119.5], 6);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
-  }).addTo(map);
+<!-- JS Libraries -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+<script src="https://unpkg.com/leaflet-omnivore@0.3.4/leaflet-omnivore.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
-  const markers = L.markerClusterGroup();
-  const lookup = [];  // will hold { name, marker }
-
-  omnivore.kml('/borders.kml')
-    .on('ready', function() {
-      this.addTo(map);
-      map.fitBounds(this.getBounds());
-    });
-
-  fetch('/points.csv')
-    .then(res => res.text())
-    .then(text => Papa.parse(text, { header: true }).data)
-    .then(rows => {
-      rows.forEach(row => {
-        if (!row.LAT || !row.LON) return;
-        const name = row['Organization Name_CLEAN'];
-        const coord = [+row.LAT, +row.LON];
-        const marker = L.marker(coord, { title: name });
-        marker.bindPopup(`<strong>${name}</strong><br>${row.Address}`);
-        marker.on('click', () => {
-          document.getElementById('sidebar').innerHTML =
-            `<h4>${name}</h4><p>${row.Address}</p>`;
-        });
-        markers.addLayer(marker);
-        lookup.push({ name, marker });
-      });
-
-      map.addLayer(markers);
-
-      // ---- SEARCH LOGIC ----
-      const input = document.getElementById('org-search');
-      const results = document.getElementById('search-results');
-
-      input.addEventListener('input', () => {
-        const q = input.value.trim().toLowerCase();
-        results.innerHTML = '';
-        if (!q) {
-          results.style.display = 'none';
-          return;
-        }
-        const matches = lookup
-          .filter(o => o.name.toLowerCase().includes(q))
-          .slice(0, 10);
-
-        if (!matches.length) {
-          results.style.display = 'none';
-          return;
-        }
-        matches.forEach(o => {
-          const div = document.createElement('div');
-          div.textContent = o.name;
-          div.style.padding = '0.3rem';
-          div.style.cursor = 'pointer';
-          div.addEventListener('mouseover', () => div.style.background = '#f0f0f0');
-          div.addEventListener('mouseout', () => div.style.background = '');
-          div.addEventListener('click', () => {
-            map.setView(o.marker.getLatLng(), 14);
-            o.marker.openPopup();
-            results.style.display = 'none';
-            input.value = o.name;
-          });
-          results.appendChild(div);
-        });
-        results.style.display = 'block';
-      });
-
-      document.addEventListener('click', e => {
-        if (!input.contains(e.target)) {
-          results.style.display = 'none';
-        }
-      });
-    })
-    .catch(console.error);
-</script>
+<!-- External JS -->
+<script src="map.js"></script>
 </body>
 </html>
