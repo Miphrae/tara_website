@@ -68,6 +68,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const iconSingle = makePinIcon('#0074D9');
   const iconMultiple = makePinIcon('#FF4136');
 
+  const toggle = document.getElementById('search-toggle');
+  const input = document.getElementById('org-search');
+  const results = document.getElementById('search-results');
+
+  toggle.addEventListener('click', () => {
+    const showing = input.style.opacity === '1';
+    if (!showing) {
+      // expand
+      input.style.width = '200px';
+      input.style.opacity = '1';
+      input.focus();
+    } else {
+      // collapse
+      input.style.width = '0';
+      input.style.opacity = '0';
+      results.style.display = 'none';
+    }
+  });
+
   fetch('/points.csv')
     .then(res => res.text())
     .then(text => Papa.parse(text, { header: true }).data)
@@ -106,26 +125,49 @@ document.addEventListener('DOMContentLoaded', () => {
           .filter(o => o.name.toLowerCase().includes(q))
           .slice(0, 10);
 
-        if (!matches.length) {
-          results.style.display = 'none';
-          return;
-        }
-        matches.forEach(o => {
-          const div = document.createElement('div');
-          div.textContent = o.name;
-          div.style.padding = '0.3rem';
-          div.style.cursor = 'pointer';
-          div.addEventListener('mouseover', () => div.style.background = '#f0f0f0');
-          div.addEventListener('mouseout', () => div.style.background = '');
-          div.addEventListener('click', () => {
-            map.setView(o.marker.getLatLng(), 14);
-            o.marker.openPopup();
-            results.style.display = 'none';
-            input.value = o.name;
+        if (matches.length) {
+          matches.forEach(o => {
+            const div = document.createElement('div');
+            div.textContent = o.name;
+            div.style.padding = '0.3rem'; div.style.cursor = 'pointer';
+            div.addEventListener('mouseover', () => div.style.background = '#f0f0f0');
+            div.addEventListener('mouseout', () => div.style.background = '');
+            div.addEventListener('click', () => {
+              map.setView(o.marker.getLatLng(), 14);
+              o.marker.openPopup();
+              results.style.display = 'none';
+              input.value = o.name;
+            });
+            results.appendChild(div);
           });
-          results.appendChild(div);
-        });
-        results.style.display = 'block';
+          results.style.display = 'block';
+        } else {
+          fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}`)
+            .then(res => res.json())
+            .then(data => {
+              if (!data.length) { results.style.display = 'none'; return; }
+              data.slice(0, 5).forEach(item => {
+                const div = document.createElement('div');
+                div.textContent = item.display_name;
+                div.style.padding = '0.3rem'; div.style.cursor = 'pointer';
+                div.addEventListener('mouseover', () => div.style.background = '#f0f0f0');
+                div.addEventListener('mouseout', () => div.style.background = '');
+                div.addEventListener('click', () => {
+                  const lat = parseFloat(item.lat), lon = parseFloat(item.lon);
+                  map.setView([lat, lon], 14);
+                  L.popup()
+                    .setLatLng([lat, lon])
+                    .setContent(`<strong>Address:</strong><br>${item.display_name}`)
+                    .openOn(map);
+                  results.style.display = 'none';
+                  input.value = item.display_name;
+                });
+                results.appendChild(div);
+              });
+              results.style.display = 'block';
+            })
+            .catch(err => console.error(err));
+        }
       });
 
       document.addEventListener('click', e => {
