@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
+  analytics.track("Button Clicked", {
+    category: "Demo",
+    label: "Map Toggle"
+  });
   //Basemap layers
   const osmStandard = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'

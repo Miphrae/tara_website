@@ -9,6 +9,39 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
 
+  <script>
+    !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize) {
+      if(analytics.invoked) window.console && console.error && console.error("Segment snippet included twice.");
+      else {
+        analytics.invoked = !0;
+        analytics.methods = ["trackSubmit","trackClick","trackLink","trackForm","pageview","identify",
+                             "reset","group","track","ready","alias","debug","page","once","off","on"];
+        analytics.factory = function(t){
+          return function(){
+            var e=Array.prototype.slice.call(arguments);
+            e.unshift(t);
+            analytics.push(e);
+            return analytics;
+          };
+        };
+        for(var t=0;t<analytics.methods.length;t++){
+          var e=analytics.methods[t];
+          analytics[e]=analytics.factory(e);
+        }
+        analytics.load = function(key){
+          var t=document.createElement("script");
+          t.type="text/javascript";
+          t.async=!0;
+          t.src="https://cdn.segment.com/analytics.js/v1/" + key + "/analytics.min.js";
+          var e=document.getElementsByTagName("script")[0];
+          e.parentNode.insertBefore(t,e);
+        };
+        analytics.SNIPPET_VERSION="4.1.0";
+        analytics.load("YOUR_WRITE_KEY"); // ← replace with your Segment write key
+        analytics.page();
+      }
+    }}();
+  </script>
 
   <style>
     /* Tab bar */
