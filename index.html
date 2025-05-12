@@ -5,10 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BR Architects</title>
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
-
-  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <!-- MarkerCluster CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
 
@@ -20,7 +17,7 @@
       margin-right:.5rem; padding:.5rem 1rem; border:none;
       background:#ddd; border-radius:4px; cursor:pointer;
     }
-    
+
     #county-tabs button.active { background:#0074D9; color:#fff; }
 
     /* Sidebar */
@@ -156,7 +153,7 @@
     <button data-county="county3">County3</button>
   </div>
 
-  <!-- Map + Sidebar -->
+  <!-- Map and Sidebar -->
   <div style="display:flex; gap:1rem;">
     <div id="sidebar" style="width:30%; min-width:200px; max-height:500px; overflow-y:auto;">
       <p><em>Click a marker on the map → its name will go here.</em></p>
@@ -238,20 +235,18 @@
     </div>
   </div>
 
-</div> <!-- end page content -->
+</div> 
 
 <!-- Footer -->
 <footer class="w3-center w3-black w3-padding-16">
   <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" class="w3-hover-text-green">w3.css</a></p>
 </footer>
 
-<!-- JS Libraries -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
 <script src="https://unpkg.com/leaflet-omnivore@0.3.4/leaflet-omnivore.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
-<!-- External JS -->
 <script src="map.js"></script>
 </body>
 </html>

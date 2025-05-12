@@ -1,6 +1,5 @@
-// map.js
 document.addEventListener('DOMContentLoaded', () => {
-  // --- Basemap layers ---
+  //Basemap layers
   const osmStandard = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
   });
@@ -21,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const results = document.getElementById('search-results');
   const sidebar = document.getElementById('sidebar');
 
-  // --- Data sources per county ---
+  // Data sources per county
   const sources = {
     county1: { kml: '/borders_livermore.kml', csv: '/points_livermore.csv' },
     county2: { kml: '/borders_pleasanton.kml', csv: '/points_pleasanton.csv' },
@@ -32,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let markerCluster = L.markerClusterGroup();
   let lookup = [];
 
-  
+
   // SVG pin factory with color param
   function makePinIcon(color) {
     return L.divIcon({
@@ -53,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const iconBlue = makePinIcon('#0074D9');
   const iconRed = makePinIcon('#FF4136');
 
-  // Load a county's KML + CSV
+  // Load a county KML + CSV
   async function loadCounty(id) {
     // clear previous
     if (borderLayer) map.removeLayer(borderLayer);
@@ -105,10 +104,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Initialize first county
   loadCounty('county1');
 
-  // Search toggle (magnifier)
+  // Search toggle
   toggle.addEventListener('click', () => {
     const open = input.style.opacity === '1';
     if (!open) {
@@ -122,30 +120,61 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Search logic (lookup markers by name or address)
+  // Search logic 
   input.addEventListener('input', () => {
     const q = input.value.trim().toLowerCase();
     results.innerHTML = '';
     if (!q) { results.style.display = 'none'; return; }
-    const matches = lookup
+
+    // 1) Local marker search
+    let matches = lookup
       .filter(o =>
-        o.name.toLowerCase().includes(q)
-        || (o.marker.getPopup().getContent().toLowerCase().includes(q))
+        o.name.toLowerCase().includes(q) ||
+        o.marker.getPopup().getContent().toLowerCase().includes(q)
       )
       .slice(0, 10);
-    if (!matches.length) { results.style.display = 'none'; return; }
-    matches.forEach(o => {
-      const div = document.createElement('div');
-      div.textContent = o.name;
-      div.addEventListener('click', () => {
-        map.setView(o.marker.getLatLng(), 14);
-        o.marker.openPopup();
-        results.style.display = 'none';
-        input.value = o.name;
+
+    if (matches.length) {
+      matches.forEach(o => {
+        const div = document.createElement('div');
+        div.textContent = o.name;
+        div.onclick = () => {
+          map.setView(o.marker.getLatLng(), 14);
+          o.marker.openPopup();
+          results.style.display = 'none';
+          input.value = o.name;
+        };
+        results.appendChild(div);
       });
-      results.appendChild(div);
-    });
-    results.style.display = 'block';
+      results.style.display = 'block';
+    } else {
+      // 2) Fallback to global address lookup via Nominatim
+      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (!data.length) { results.style.display = 'none'; return; }
+          data.slice(0, 5).forEach(item => {
+            const div = document.createElement('div');
+            div.textContent = item.display_name;
+            div.onclick = () => {
+              const lat = parseFloat(item.lat), lon = parseFloat(item.lon);
+              map.setView([lat, lon], 14);
+              L.popup()
+                .setLatLng([lat, lon])
+                .setContent(`<strong>Address:</strong><br>${item.display_name}`)
+                .openOn(map);
+              results.style.display = 'none';
+              input.value = item.display_name;
+            };
+            results.appendChild(div);
+          });
+          results.style.display = 'block';
+        })
+        .catch(err => {
+          console.error(err);
+          results.style.display = 'none';
+        });
+    }
   });
 
   document.addEventListener('click', e => {
@@ -155,6 +184,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // --- To switch to satellite basemap on demand: ---
-  // map.addLayer(esriSat);        // add satellite
-  // map.removeLayer(osmStandard); // remove street
+  map.addLayer(esriSat);        // add satellite
+  map.removeLayer(osmStandard); // remove street
 });
