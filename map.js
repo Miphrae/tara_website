@@ -27,9 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
   //   county3: { kml: '/borders.kml', csv: '/points.csv' }
   // };
   const sources = {
-    county1: { kml: 'http://miphrae.github.io/tara_website/borders_livermore.kml', csv: 'http://miphrae.github.io/tara_website/points_livermore.csv' },
-    county2: { kml: 'http://miphrae.github.io/tara_website/borders_pleasanton.kml', csv: 'http://miphrae.github.io/tara_website/points_pleasanton.csv' },
-    county3: { kml: 'http://miphrae.github.io/tara_website/borders.kml', csv: 'http://miphrae.github.io/tara_website/points.csv' }
+    county1: { kml: 'https://miphrae.github.io/tara_website/borders_livermore.kml', csv: 'https://miphrae.github.io/tara_website/points_livermore.csv' },
+    county2: { kml: 'https://miphrae.github.io/tara_website/borders_pleasanton.kml', csv: 'https://miphrae.github.io/tara_website/points_pleasanton.csv' },
+    county3: { kml: 'https://miphrae.github.io/tara_website/borders.kml', csv: 'https://miphrae.github.io/tara_website/points.csv' }
   };
 
   let borderLayer = null;
