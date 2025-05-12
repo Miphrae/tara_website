@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let markerCluster = L.markerClusterGroup();
   let lookup = [];
 
+  
   // SVG pin factory with color param
   function makePinIcon(color) {
     return L.divIcon({
