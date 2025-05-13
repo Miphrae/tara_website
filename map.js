@@ -26,11 +26,17 @@ document.addEventListener('DOMContentLoaded', () => {
   //   county2: { kml: '/borders_pleasanton.kml', csv: '/points_pleasanton.csv' },
   //   county3: { kml: '/borders.kml', csv: '/points.csv' }
   // };
+  // const sources = {
+  //   county1: { kml: 'https://miphrae.github.io/tara_website/borders_livermore.kml', csv: 'https://miphrae.github.io/tara_website/points_livermore.csv' },
+  //   county2: { kml: 'https://miphrae.github.io/tara_website/borders_pleasanton.kml', csv: 'https://miphrae.github.io/tara_website/points_pleasanton.csv' },
+  //   county3: { kml: 'https://miphrae.github.io/tara_website/borders.kml', csv: 'https://miphrae.github.io/tara_website/points.csv' }
+  // };
   const sources = {
-    county1: { kml: 'https://miphrae.github.io/tara_website/borders_livermore.kml', csv: 'https://miphrae.github.io/tara_website/points_livermore.csv' },
-    county2: { kml: 'https://miphrae.github.io/tara_website/borders_pleasanton.kml', csv: 'https://miphrae.github.io/tara_website/points_pleasanton.csv' },
-    county3: { kml: 'https://miphrae.github.io/tara_website/borders.kml', csv: 'https://miphrae.github.io/tara_website/points.csv' }
+    county1: { kml: 'https://cdn.jsdelivr.net/gh/miphrae/tara_website@v1.0.0/borders_livermore.kml', csv: 'https://cdn.jsdelivr.net/gh/miphrae/tara_website@v1.0.0/points_livermore.csv' },
+    county2: { kml: 'https://cdn.jsdelivr.net/gh/miphrae/tara_website@v1.0.0/borders_pleasanton.kml', csv: 'https://cdn.jsdelivr.net/gh/miphrae/tara_website@v1.0.0/points_pleasanton.csv' },
+    county3: { kml: 'https://cdn.jsdelivr.net/gh/miphrae/tara_website@v1.0.0/borders.kml', csv: 'https://cdn.jsdelivr.net/gh/miphrae/tara_website@v1.0.0/points.csv' }
   };
+
 
   let borderLayer = null;
   let markerCluster = L.markerClusterGroup();
