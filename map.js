@@ -195,6 +195,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // --- To switch to satellite basemap on demand: ---
-  map.addLayer(esriSat);        // add satellite
-  map.removeLayer(osmStandard); // remove street
+  // map.addLayer(esriSat);        // add satellite
+  // map.removeLayer(osmStandard); // remove street
 });
