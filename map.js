@@ -10,6 +10,27 @@ document.addEventListener('DOMContentLoaded', () => {
     { attribution: 'Tiles &copy; Esri' }
   );
 
+  const maptiler_key = 'fX3Uesvx5ZBwgI8zNqhf';
+  const maptileLayer = L.tileLayer(
+    `https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${maptiler_key}`,
+    {
+      tileSize: 512,
+      zoomOffset: -1,
+      minZoom: 1,
+      attribution: "\u003ca href=\"https://www.maptiler.com/copyright/\" target=\"_blank\"\u003e\u0026copy; MapTiler\u003c/a\u003e \u003ca href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\"\u003e\u0026copy; OpenStreetMap contributors\u003c/a\u003e",
+      crossOrigin: true
+    });
+
+  const maptileLayer2 = L.tileLayer(
+    `https://api.maptiler.com/maps/hybrid/style.json?key=${maptiler_key}`,
+    {
+      tileSize: 512,
+      zoomOffset: -1,
+      minZoom: 1,
+      attribution: "\u003ca href=\"https://www.maptiler.com/copyright/\" target=\"_blank\"\u003e\u0026copy; MapTiler\u003c/a\u003e \u003ca href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\"\u003e\u0026copy; OpenStreetMap contributors\u003c/a\u003e",
+      crossOrigin: true
+    })
+
   // initialize map
   const map = L.map('map', { layers: [osmStandard] }).setView([37.5, -119.5], 6);
 
@@ -117,6 +138,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   loadCounty('county1');
 
+
+  //  L.control.maptilerGeocoding({ apiKey: maptiler_key, country: 'us', collapsed: true, placeholder: 'Search by addresses' }).addTo(map);
+
+
   // Search toggle
   toggle.addEventListener('click', () => {
     const open = input.style.opacity === '1';
@@ -159,33 +184,53 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       results.style.display = 'block';
     } else {
-      // 2) Fallback to global address lookup via Nominatim
-      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}`)
-        .then(res => res.json())
-        .then(data => {
-          if (!data.length) { results.style.display = 'none'; return; }
-          data.slice(0, 5).forEach(item => {
-            const div = document.createElement('div');
-            div.textContent = item.display_name;
-            div.onclick = () => {
-              const lat = parseFloat(item.lat), lon = parseFloat(item.lon);
-              map.setView([lat, lon], 14);
-              L.popup()
-                .setLatLng([lat, lon])
-                .setContent(`<strong>Address:</strong><br>${item.display_name}`)
-                .openOn(map);
-              results.style.display = 'none';
-              input.value = item.display_name;
-            };
-            results.appendChild(div);
-          });
-          results.style.display = 'block';
-        })
-        .catch(err => {
-          console.error(err);
-          results.style.display = 'none';
-        });
+
+      console.log("Fallback");
+
     }
+    const url = `https://api.maptiler.com/geocoding/${encodeURIComponent(q)}.json?key=${maptiler_key}&limit=5`;
+    console.log('MapTiler fallback URL:', url);
+
+    fetch(url)
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then(data => {
+        const features = Array.isArray(data.features) ? data.features : [];
+        if (features.length === 0) {
+          console.log('No MapTiler results');
+          results.style.display = 'none';
+          return;
+        }
+        // console.log(features);
+
+        features.slice(0, 5).forEach(f => {
+          const label = f.place_name;
+          console.log(label);
+          const [lon, lat] = f.geometry.coordinates;
+          // console.log([lat,lon]);
+          const div = document.createElement('div');
+          div.textContent = label;
+          div.style.padding = '0.3rem';
+          div.style.cursor = 'pointer';
+          div.addEventListener('click', () => {
+            map.setView([lat, lon], 14);
+            L.popup()
+              .setLatLng([lat, lon])
+              .setContent(`<strong>Address:</strong><br>${label}`)
+              .openOn(map);
+            results.style.display = 'none';
+            input.value = label;
+          });
+          results.appendChild(div);
+        });
+        results.style.display = 'block';
+      })
+      .catch(err => {
+        console.error('MapTiler geocode error:', err);
+        results.style.display = 'none';
+      });
   });
 
   document.addEventListener('click', e => {
