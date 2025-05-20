@@ -1,17 +1,1 @@
-function makePinIcon(color) {
-  return L.divIcon({
-    html: `
-      <svg width="24" height="36" viewBox="0 0 24 36">
-        <path
-          d="M12 0C7.038 0 3 4.038 3 9
-             c0 7.5 9 27 9 27s9-19.5 9-27
-             C21 4.038 16.962 0 12 0z"
-          fill="${color}"/>
-        <circle cx="12" cy="9" r="3" fill="#fff"/>
-      </svg>`,
-    className: '',
-    iconSize:   [24, 36],
-    iconAnchor: [12, 36],
-    popupAnchor:[0, -36]
-  });
-}
+function makePinIcon(n){return L.divIcon({html:`\n      <svg width="24" height="36" viewBox="0 0 24 36">\n        <path\n          d="M12 0C7.038 0 3 4.038 3 9\n             c0 7.5 9 27 9 27s9-19.5 9-27\n             C21 4.038 16.962 0 12 0z"\n          fill="${n}"/>\n        <circle cx="12" cy="9" r="3" fill="#fff"/>\n      </svg>`,className:"",iconSize:[24,36],iconAnchor:[12,36],popupAnchor:[0,-36]})}
