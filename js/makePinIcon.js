@@ -1,5 +1,3 @@
-// js/makePinIcon.js
-// creates a Leaflet DivIcon "pin" in the given color
 function makePinIcon(color) {
   return L.divIcon({
     html: `

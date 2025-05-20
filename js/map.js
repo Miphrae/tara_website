@@ -1,4 +1,3 @@
-// js/map.js
 document.addEventListener('DOMContentLoaded', ()=>{
   // 1) basemap & UI refs…
   const map = L.map('map',{ layers:[L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OSM'})]})

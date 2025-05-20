@@ -1,6 +1,3 @@
-// js/loadCounty.js
-// depends on omnivore and PapaParse loaded globally
-
 /**
  * loadCounty(id, map, markerCluster, lookup, sidebar, sources, iconBlue, iconRed)
  *  - id: “county1”|”county2”|”county3”

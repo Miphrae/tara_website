@@ -1,6 +1,3 @@
-// js/searchLogic.js
-// assumes `map`, `lookup`, `input`, `toggle`, `results`, `sidebar`, and your maptiler_key exist globally
-
 function attachSearchLogic(map, lookup, input, toggle, results, sidebar, maptiler_key) {
     // toggle open/close
     toggle.addEventListener('click', ()=>{
